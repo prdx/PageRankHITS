@@ -1,0 +1,6 @@
+output_dir: './output/'
+stopwords: './AP_DATA/stoplist.txt'
+stemming: 'PorterStemmer'
+index_name: 'merged'
+es_dir: './es/'
+
