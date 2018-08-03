@@ -10,7 +10,8 @@ def set_root():
         query_list = query_list.split("\n")
         # Last element is \n
         if query_list[-1] == "" or query_list[-1] == "\n":
-            query_list.pop()
+            query_list = query_list[:-1]
+
         for query in query_list:
             results = search(query)["hits"]["hits"]
 
