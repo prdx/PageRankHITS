@@ -17,16 +17,22 @@ def _build_P_M():
     global _P
     global _L
 
-    with open("./wt2g_inlinks.txt", "r") as in_links_file:
-        in_links = in_links_file.read()
-        lines = in_links.split("\n")[:-1]
-        for line in lines:
-            data = line.split()
-            p = data.pop(0)
+    if mode == "wt2g":
+        in_links_file = open("./wt2g_inlinks.txt", "r")
+    else:
+        in_links_file = open("./crawled_inlinks.txt", "r")
 
-            _P.append(p)            # Build P
-            _M[p] = list(set(data)) # Build M
-            _L[p] = 0               # Init L
+    in_links = in_links_file.read()
+    lines = in_links.split("\n")[:-1]
+    for line in lines:
+        data = line.split()
+        p = data.pop(0)
+
+        _P.append(p)            # Build P
+        _M[p] = list(set(data)) # Build M
+        _L[p] = 0               # Init L
+
+    close(in_links_file)
 
 def _build_L():
     global _M
@@ -54,8 +60,8 @@ def _get_perplexity():
     return 2 ** (-e)
 
 
-def compute():
-    _build_P_M()
+def compute(mode = "wt2g"):
+    _build_P_M(mode)
     _build_L()
     _find_dangling_nodes()
     _init_PR()
