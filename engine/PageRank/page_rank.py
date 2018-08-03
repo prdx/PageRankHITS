@@ -12,7 +12,7 @@ _iteration = 10     # Iteration until convergence, the greater the slower but mo
 _PR = {}            # PageRank score
 
 
-def _build_P_M():
+def _build_P_M(mode):
     global _M
     global _P
     global _L
@@ -32,7 +32,7 @@ def _build_P_M():
         _M[p] = list(set(data)) # Build M
         _L[p] = 0               # Init L
 
-    close(in_links_file)
+    in_links_file.close()
 
 def _build_L():
     global _M
