@@ -5,7 +5,9 @@ import json
 config = Config("./config.yml")
 index_name = config.get("index_name")
 es_dir = config.get("es_dir")
-es = Elasticsearch()
+es = Elasticsearch(timeout = 2000)
+
+scroll_id = ""
 
 def get_es_script(script_name):
     """Read es json file
@@ -15,7 +17,8 @@ def get_es_script(script_name):
         body = json.load(s)
     return body
 
-def search(keywords = "", body = {}):
+def search(keywords, body = {}):
+    global scroll_id
     """ES Built-in search command
     parameter string keyword to search
     return list of matched documents
@@ -25,11 +28,19 @@ def search(keywords = "", body = {}):
         body = get_es_script('search')
         body['query']['match']['text'] = keywords 
         
-
     res = es.search(index = index_name,
             body = body,
-            timeout = "100m"
+            timeout = "20000m",
+            scroll="15m"
         )
+
+    scroll_id = res["_scroll_id"]
+
+    return res
+
+def scroll():
+    global scroll_id
+    res = es.scroll(scroll_id = scroll_id, scroll = "15m")
     return res
 
 def get(url):

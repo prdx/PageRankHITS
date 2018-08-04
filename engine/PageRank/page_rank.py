@@ -37,10 +37,19 @@ def _build_P_M(mode):
 def _build_L():
     global _M
     global _L
+
+    empty_list = []
     for in_links in _M.values():
         for in_link in in_links:
             if in_link in _L:
                 _L[in_link] += 1
+            else:
+                _L[in_link] = 1             # For inlinks that does not have outlink
+                empty_list.append(in_link)
+                continue
+
+    for url in empty_list:
+        _M[url] = []
 
 def _init_PR():
     global _PR
@@ -83,7 +92,11 @@ def compute(mode = "wt2g"):
             PR[p] += _d * sink_PR / N
 
             for q in _M[p]:
-                PR[p] += _d * _PR[q] / _L[q]
+                try:
+                    PR[p] += _d * _PR[q] / _L[q]
+                except KeyError:
+                    print(_PR[q])
+                    print(_L[q])
 
         for p in _P:
             _PR[p] = PR[p]
@@ -95,6 +108,9 @@ def compute(mode = "wt2g"):
 
         current_perplexity = new_perplexity
 
-    write_score("wt2g_result", _PR)
+    if mode == "wt2g":
+        write_score("wt2g_result", _PR)
+    else:
+        write_score("crawled_result", _PR)
 
 
